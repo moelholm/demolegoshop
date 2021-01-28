@@ -1,0 +1,26 @@
+springfox:
+  documentation:
+    swagger:
+      v2:
+        path: /api-docs
+
+server:
+  port: 8080
+
+application:
+    items:
+        -
+          name: "Starwars legos"
+          id: "f4694851-4dd7-4cb2-8b21-0c4917992ec2"
+          price: 400
+          status: AVAILABLE
+        -
+          name: "Powerrangers legos"
+          id: "3f28d5e9-9a8c-4e0b-b711-047fa39f473b"
+          price: 350
+          status: AVAILABLE
+        -
+          name: "Lego mindstorm"
+          id: "7a59f583-998c-4e1d-9f40-938af0342e4b"
+          price: 1200
+          status: SOLDOUT

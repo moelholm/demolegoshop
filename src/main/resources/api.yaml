@@ -1,0 +1,190 @@
+swagger: "2.0"
+info:
+  description: "Code example of shop functionality for Lego"
+  version: "1.0.0"
+  title: "Lego Shop"
+  contact:
+    email: "applicativeconsult@gmail.com"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+basePath: "/v1"
+schemes:
+  - "http"
+paths:
+  /shop/items/:
+    get:
+      summary: "All items available for purchase in the shop"
+      description: "Multiple status values can be provided with comma separated strings"
+      operationId: "allItems"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "status"
+          in: "query"
+          description: "Status values that need to be considered for filter"
+          required: false
+          type: "array"
+          items:
+            type: "string"
+            enum:
+              - "available"
+              - "soldout"
+            default: "available"
+          collectionFormat: "multi"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Item"
+        "400":
+          description: "Invalid status value"
+    put:
+      summary: "Change availability of existing item"
+      description: ""
+      operationId: "updateItem"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Item object availability that is increased in the store"
+          required: true
+          schema:
+            $ref: "#/definitions/Item"
+      responses:
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "Item not found"
+        "405":
+          description: "Validation exception"
+  /shop/item/{itemId}:
+    get:
+      summary: "Find an item by id"
+      description: "Returns a single item"
+      operationId: "getItemById"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "itemId"
+          in: "path"
+          description: "ID of item to return"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Item"
+        "400":
+          description: "Invalid ID supplied"
+        "404":
+          description: "Item not found"
+  /shop/basket/{itemId}:
+    post:
+      summary: "Place an item into the basket"
+      description: ""
+      operationId: "placeItemInBasket"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "itemId"
+          in: "path"
+          description: "Item id to place in basket"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "Item successfully placed in basket"
+        "400":
+          description: "Item is unavailable for purchase"
+        "404":
+          description: "Item not found"
+    delete:
+      summary: "Remove single item from basket"
+      description: ""
+      operationId: "removeItemInBasket"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "itemId"
+          in: "path"
+          description: "Item id to remove from basket"
+          required: true
+          type: "string"
+      responses:
+        "200":
+          description: "Item successfully removed from basket"
+        "400":
+          description: "Item is not in the basket"
+        "404":
+          description: "Item not found"
+  /shop/basket/:
+    get:
+      summary: "All items currently in the basket"
+      operationId: "getBasket"
+      produces:
+        - "application/json"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Basket"
+        "400":
+          description: "Invalid status value"
+    delete:
+      summary: "Remove all items from basket"
+      operationId: "emptyBasket"
+      produces:
+        - "application/json"
+      responses:
+        "200":
+          description: "All items removed from basket"
+definitions:
+  Basket:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        example: "12345"
+      name:
+        type: "string"
+        example: "CustomerBasket"
+      content:
+        type: "array"
+        xml:
+          name: "items"
+          wrapped: true
+        items:
+          $ref: "#/definitions/Item"
+    xml:
+      name: "Basket"
+  Item:
+    type: "object"
+    required:
+      - "id"
+      - "name"
+      - "price"
+    properties:
+      id:
+        type: "string"
+        example: "12345"
+      name:
+        type: "string"
+        example: "Starwars"
+      price:
+        type: "integer"
+        example: 4
+      status:
+        type: "string"
+        description: "Availability in the shop"
+        enum:
+          - "available"
+          - "soldout"
+    xml:
+      name: "Item"
